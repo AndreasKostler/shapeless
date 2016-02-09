@@ -126,6 +126,7 @@ addCommandAlias("release-all", ";root;release")
 addCommandAlias("js", ";project coreJS")
 addCommandAlias("jvm", ";project coreJVM")
 addCommandAlias("root", ";project root")
+addCommandAlias("runAll", ";examplesJVM/runAll")
 
 lazy val scalaMacroDependencies: Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
