@@ -289,6 +289,7 @@ class PolyTests {
     assertEquals("1" :: 2 :: "3" :: 4 :: HNil, blis)
   }
 
+  /*
   @Test
   def testRotateLeft {
     object isd extends Poly3 {
@@ -370,4 +371,5 @@ class PolyTests {
     val r6 = dcis(2.0, 'a', 1, "foo")
     assertTypedEquals[String]("i: 1, s: foo, d: 2.0, c: a", r6)
   }
+  */
 }
