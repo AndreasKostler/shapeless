@@ -45,7 +45,7 @@ def configureJUnit(crossProject: CrossProject) = {
 }
 
 lazy val commonJsSettings = Seq(
-  scalaJSStage in Global := FastOptStage,
+  scalaJSUseRhino in Global := false,
   parallelExecution in Test := false
 )
 
