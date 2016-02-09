@@ -35,6 +35,15 @@ lazy val commonSettings = Seq(
     ))
 ) ++ crossVersionSharedSources ++ scalaMacroDependencies
 
+def configureJUnit(crossProject: CrossProject) = {
+  crossProject
+  .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
+  .jvmSettings(
+    libraryDependencies +=
+      "com.novocode" % "junit-interface" % "0.9" % "test"
+  )
+}
+
 lazy val commonJsSettings = Seq(
   scalaJSStage in Global := FastOptStage,
   parallelExecution in Test := false
@@ -61,37 +70,26 @@ val CrossTypeMixed: CrossType = new CrossType {
 }
 
 lazy val core = crossProject.crossType(CrossTypeMixed)
+  .configure(configureJUnit)
   .settings(moduleName := "shapeless")
   .settings(coreSettings:_*)
   .settings(
     sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
   )
   .jsSettings(commonJsSettings:_*)
-  .jsSettings(
-    testOptions in Test := Seq(Tests.Filter(_ == "shapeless.SerializationTests"))
-  )
   .jvmSettings(commonJvmSettings:_*)
-  .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
-  .jvmSettings(
-    libraryDependencies +=
-      "com.novocode" % "junit-interface" % "0.9" % "test"
-  )
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
 
 lazy val scratch = crossProject.crossType(CrossType.Pure)
+  .configure(configureJUnit)
   .dependsOn(core)
   .settings(moduleName := "scratch")
   .settings(coreSettings:_*)
   .settings(noPublishSettings:_*)
   .jsSettings(commonJsSettings:_*)
   .jvmSettings(commonJvmSettings:_*)
-  .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
-  .jvmSettings(
-    libraryDependencies +=
-      "com.novocode" % "junit-interface" % "0.9" % "test"
-  )
 
 lazy val scratchJVM = scratch.jvm
 lazy val scratchJS = scratch.js
@@ -105,6 +103,7 @@ def runAllIn(config: Configuration) = {
 }
 
 lazy val examples = crossProject.crossType(CrossType.Pure)
+  .configure(configureJUnit)
   .dependsOn(core)
   .settings(moduleName := "examples")
   .settings(runAllIn(Compile))
@@ -112,11 +111,6 @@ lazy val examples = crossProject.crossType(CrossType.Pure)
   .settings(noPublishSettings:_*)
   .jsSettings(commonJsSettings:_*)
   .jvmSettings(commonJvmSettings:_*)
-  .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
-  .jvmSettings(
-    libraryDependencies +=
-      "com.novocode" % "junit-interface" % "0.9" % "test"
-  )
 
 lazy val examplesJVM = examples.jvm
 lazy val examplesJS = examples.js
