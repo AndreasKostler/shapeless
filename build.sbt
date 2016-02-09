@@ -23,6 +23,11 @@ lazy val commonSettings = Seq(
     Resolver.sonatypeRepo("snapshots")
   ),
 
+  scalacOptions in console in Compile -= "-Xfatal-warnings",
+  scalacOptions in console in Test    -= "-Xfatal-warnings",
+
+  initialCommands in console := """import shapeless._""",
+
   scmInfo :=
     Some(ScmInfo(
       url("https://github.com/milessabin/shapeless"),
@@ -48,11 +53,11 @@ lazy val root = project.in(file("."))
   .settings(noPublishSettings)
 
 val CrossTypeMixed: CrossType = new CrossType {
-	def projectDir(crossBase: File, projectType: String): File =
-		crossBase / projectType
+  def projectDir(crossBase: File, projectType: String): File =
+    crossBase / projectType
 
-	def sharedSrcDir(projectBase: File, conf: String): Option[File] =
-		Some(projectBase.getParentFile / "src" / conf / "scala")
+  def sharedSrcDir(projectBase: File, conf: String): Option[File] =
+    Some(projectBase.getParentFile / "src" / conf / "scala")
 }
 
 lazy val core = crossProject.crossType(CrossTypeMixed)
@@ -62,11 +67,11 @@ lazy val core = crossProject.crossType(CrossTypeMixed)
     sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
   )
   .jsSettings(commonJsSettings:_*)
-	.jsSettings(
-		testOptions in Test := Seq(Tests.Filter(_ == "shapeless.SerializationTests"))
-	)
+  .jsSettings(
+    testOptions in Test := Seq(Tests.Filter(_ == "shapeless.SerializationTests"))
+  )
   .jvmSettings(commonJvmSettings:_*)
-	.jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
+  .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
   .jvmSettings(
     libraryDependencies +=
       "com.novocode" % "junit-interface" % "0.9" % "test"
@@ -82,7 +87,7 @@ lazy val scratch = crossProject.crossType(CrossType.Pure)
   .settings(noPublishSettings:_*)
   .jsSettings(commonJsSettings:_*)
   .jvmSettings(commonJvmSettings:_*)
-	.jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
+  .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
   .jvmSettings(
     libraryDependencies +=
       "com.novocode" % "junit-interface" % "0.9" % "test"
@@ -94,20 +99,20 @@ lazy val scratchJS = scratch.js
 lazy val runAll = TaskKey[Unit]("runAll")
 
 def runAllIn(config: Configuration) = {
-	runAll in config <<= (discoveredMainClasses in config, runner in run, fullClasspath in config, streams) map {
-		(classes, runner, cp, s) => classes.foreach(c => runner.run(c, Attributed.data(cp), Seq(), s.log))
-	}
+  runAll in config <<= (discoveredMainClasses in config, runner in run, fullClasspath in config, streams) map {
+    (classes, runner, cp, s) => classes.foreach(c => runner.run(c, Attributed.data(cp), Seq(), s.log))
+  }
 }
 
 lazy val examples = crossProject.crossType(CrossType.Pure)
   .dependsOn(core)
   .settings(moduleName := "examples")
-	.settings(runAllIn(Compile))
+  .settings(runAllIn(Compile))
   .settings(coreSettings:_*)
   .settings(noPublishSettings:_*)
   .jsSettings(commonJsSettings:_*)
   .jvmSettings(commonJvmSettings:_*)
-	.jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
+  .jsConfigure(_.enablePlugins(ScalaJSJUnitPlugin))
   .jvmSettings(
     libraryDependencies +=
       "com.novocode" % "junit-interface" % "0.9" % "test"
