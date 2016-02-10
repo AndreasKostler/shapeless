@@ -88,7 +88,12 @@ lazy val core = crossProject.crossType(CrossTypeMixed)
   .settings(osgiSettings:_*)
   .settings(
     sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen),
-    sourceGenerators in Compile <+= buildInfo
+    sourceGenerators in Compile <+= buildInfo,
+
+    mappings in (Compile, packageSrc) <++=
+      (sourceManaged in Compile, managedSources in Compile) map { (base, srcs) =>
+        (srcs pair (Path.relativeTo(base) | Path.flat))
+      }
   )
   .settings(mimaSettings:_*)
   .jsSettings(commonJsSettings:_*)
