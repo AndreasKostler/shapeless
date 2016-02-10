@@ -116,6 +116,8 @@ lazy val examplesJVM = examples.jvm
 lazy val examplesJS = examples.js
 
 addCommandAlias("validate", ";root;compile;test")
+addCommandAlias("validateJVM", ";coreJVM/compile;coreJVM/test;examplesJVM/compile;coreJVM/doc")
+addCommandAlias("validateJS", ";coreJS/compile;coreJS/test;examplesJS/compile;coreJS/doc")
 addCommandAlias("release-all", ";root;release")
 addCommandAlias("js", ";project coreJS")
 addCommandAlias("jvm", ";project coreJVM")

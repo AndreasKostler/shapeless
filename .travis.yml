@@ -14,14 +14,7 @@ cache:
     - $HOME/.sbt
 
 script:
-  - if [[ "${TRAVIS_PULL_REQUEST}" == "false" &&
-          "${TRAVIS_BRANCH}" == "master" &&
-          $(cat version.sbt) =~ "-SNAPSHOT"
-    ]]; then
-      sbt ++${TRAVIS_SCALA_VERSION} validate publish ;
-    else
-      sbt ++${TRAVIS_SCALA_VERSION} validate ;
-    fi
+  - scripts/travis-publish.sh
 
 env:
   global:
