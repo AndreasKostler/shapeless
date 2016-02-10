@@ -93,7 +93,10 @@ lazy val core = crossProject.crossType(CrossTypeMixed)
     mappings in (Compile, packageSrc) <++=
       (sourceManaged in Compile, managedSources in Compile) map { (base, srcs) =>
         (srcs pair (Path.relativeTo(base) | Path.flat))
-      }
+      },
+
+    mappings in (Compile, packageSrc) <++=
+      (mappings in (Compile, packageSrc) in LocalProject("examplesJVM"))
   )
   .settings(mimaSettings:_*)
   .jsSettings(commonJsSettings:_*)
