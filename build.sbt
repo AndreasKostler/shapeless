@@ -2,9 +2,16 @@ import com.typesafe.sbt.pgp.PgpKeys.publishSigned
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 import ReleaseTransformations._
 
+import sbtbuildinfo.Plugin.{ buildInfoSettings => defaultBuildInfoSettings, _ }
+
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import com.typesafe.tools.mima.plugin.MimaKeys
 import MimaKeys.{ previousArtifacts, binaryIssueFilters }
+
+import com.typesafe.sbt.osgi.SbtOsgi.{ osgiSettings => defaultOsgiSettings, _ }
+
+import com.typesafe.sbt.SbtGit._
+import GitKeys._
 
 lazy val buildSettings = Seq(
   organization := "com.chuusai",
@@ -77,8 +84,11 @@ lazy val core = crossProject.crossType(CrossTypeMixed)
   .configure(configureJUnit)
   .settings(moduleName := "shapeless")
   .settings(coreSettings:_*)
+  .settings(buildInfoSettings:_*)
+  .settings(osgiSettings:_*)
   .settings(
-    sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
+    sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen),
+    sourceGenerators in Compile <+= buildInfo
   )
   .settings(mimaSettings:_*)
   .jsSettings(commonJsSettings:_*)
@@ -203,6 +213,26 @@ lazy val mimaSettings = mimaDefaultSettings ++ Seq(
     Seq(
     )
   }
+)
+
+lazy val buildInfoSettings = defaultBuildInfoSettings ++ Seq(
+  buildInfoPackage := "shapeless",
+  buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion),
+  buildInfoKeys ++= Seq[BuildInfoKey](
+    version,
+    scalaVersion,
+    gitHeadCommit,
+    BuildInfoKey.action("buildTime") {
+      System.currentTimeMillis
+    }
+  )
+)
+
+lazy val osgiSettings = defaultOsgiSettings ++ Seq(
+  OsgiKeys.bundleSymbolicName := "shapeless",
+  OsgiKeys.exportPackage := Seq("shapeless.*;version=${Bundle-Version}"),
+  OsgiKeys.importPackage := Seq("""!scala.quasiquotes,scala.*;version="$<range;[==,=+);$<@>>""""),
+  OsgiKeys.additionalHeaders := Map("-removeheaders" -> "Include-Resource,Private-Package")
 )
 
 lazy val sharedReleaseProcess = Seq(
