@@ -159,10 +159,8 @@ class TypeableTests {
     val clisdb = lisdb.cast[Int :: String :: Double :: Boolean :: HNil]
     assertTrue(clisdb.isDefined)
 
-    /*
     val clisdb2 = lisdb.cast[Int :: String :: Float :: Boolean :: HNil]
     assertTrue(clisdb2.isEmpty)
-    */
   }
 
   @Test
@@ -324,10 +322,8 @@ class TypeableTests {
     val cp = p.cast[(Int, String)]
     assertTrue(cp.isDefined)
 
-    /*
     val cp2 = p.cast[(Double, String)]
     assertTrue(cp2.isEmpty)
-    */
 
     val cp3 = p.cast[(Int, List[String])]
     assertTrue(cp3.isEmpty)
@@ -336,10 +332,8 @@ class TypeableTests {
     val cm = m.cast[Map[Int, String]]
     assertTrue(cm.isDefined)
 
-    /*
     val cm2 = m.cast[Map[Double, String]]
     assertTrue(cm2.isEmpty)
-    */
 
     val cm3 = m.cast[Map[Int, List[String]]]
     assertTrue(cm3.isEmpty)
@@ -373,10 +367,8 @@ class TypeableTests {
     val cei3 = ei.cast[Either[Int, _]]
     assertTrue(cei3.isDefined)
 
-    /*
     val cei4 = ei.cast[Either[Double, String]]
     assertTrue(cei4.isEmpty)
-    */
 
     val es: Any = Right[Int, String]("foo")
     val ces = es.cast[Either[Int, String]]

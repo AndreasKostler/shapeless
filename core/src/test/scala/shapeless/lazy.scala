@@ -295,7 +295,7 @@ class LazyStrictTests {
     }
   }
 
-  /*
+
   case class CC(l: List[CC])
 
   trait TC[T] {
@@ -389,5 +389,4 @@ class LazyStrictTests {
     assert(genTC3SO)
     assert(listTC3SO)
   }
-  */
 }

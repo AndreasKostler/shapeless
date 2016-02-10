@@ -1516,9 +1516,7 @@ class TupleTests {
 
   @Test
   def testMkString {
-    /*
     assertEquals("<1;foo;2.0>", (1, "foo", 2.0).mkString("<", ";", ">"))
-    */
   }
 
   @Test
