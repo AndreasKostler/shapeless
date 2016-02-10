@@ -2,6 +2,10 @@ import com.typesafe.sbt.pgp.PgpKeys.publishSigned
 import org.scalajs.sbtplugin.cross.{ CrossProject, CrossType }
 import ReleaseTransformations._
 
+import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
+import com.typesafe.tools.mima.plugin.MimaKeys
+import MimaKeys.{ previousArtifacts, binaryIssueFilters }
+
 lazy val buildSettings = Seq(
   organization := "com.chuusai",
   scalaVersion := "2.11.7",
@@ -76,6 +80,7 @@ lazy val core = crossProject.crossType(CrossTypeMixed)
   .settings(
     sourceGenerators in Compile <+= (sourceManaged in Compile).map(Boilerplate.gen)
   )
+  .settings(mimaSettings:_*)
   .jsSettings(commonJsSettings:_*)
   .jvmSettings(commonJvmSettings:_*)
 
@@ -116,8 +121,8 @@ lazy val examplesJVM = examples.jvm
 lazy val examplesJS = examples.js
 
 addCommandAlias("validate", ";root;compile;test")
-addCommandAlias("validateJVM", ";coreJVM/compile;coreJVM/test;examplesJVM/compile;coreJVM/doc")
-addCommandAlias("validateJS", ";coreJS/compile;coreJS/test;examplesJS/compile;coreJS/doc")
+addCommandAlias("validateJVM", ";coreJVM/compile;coreJVM/mimaReportBinaryIssues;coreJVM/test;examplesJVM/compile;coreJVM/doc")
+addCommandAlias("validateJS", ";coreJS/compile;coreJS/mimaReportBinaryIssues;coreJS/test;examplesJS/compile;coreJS/doc")
 addCommandAlias("release-all", ";root;release")
 addCommandAlias("js", ";project coreJS")
 addCommandAlias("jvm", ";project coreJVM")
@@ -184,6 +189,20 @@ lazy val noPublishSettings = Seq(
   publish := (),
   publishLocal := (),
   publishArtifact := false
+)
+
+lazy val mimaSettings = mimaDefaultSettings ++ Seq(
+  previousArtifacts := Set(), // Set(organization.value %% moduleName.value % "2.3.0"),
+
+  binaryIssueFilters ++= {
+    import com.typesafe.tools.mima.core._
+    import com.typesafe.tools.mima.core.ProblemFilters._
+
+    // Filtering the methods that were added since the checked version
+    // (these only break forward compatibility, not the backward one)
+    Seq(
+    )
+  }
 )
 
 lazy val sharedReleaseProcess = Seq(
