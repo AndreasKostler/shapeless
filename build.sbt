@@ -19,6 +19,18 @@ lazy val buildSettings = Seq(
   crossScalaVersions := Seq("2.10.6", "2.11.7", "2.12.0-M3")
 )
 
+addCommandAlias("root", ";project root")
+addCommandAlias("core", ";project coreJVM")
+addCommandAlias("scratch", ";project scratchJVM")
+addCommandAlias("examples", ";project examplesJVM")
+
+addCommandAlias("validate", ";root;compile;test")
+addCommandAlias("validateJVM", ";coreJVM/compile;coreJVM/mimaReportBinaryIssues;coreJVM/test;examplesJVM/compile;coreJVM/doc")
+addCommandAlias("validateJS", ";coreJS/compile;coreJS/mimaReportBinaryIssues;coreJS/test;examplesJS/compile;coreJS/doc")
+
+addCommandAlias("runAll", ";examplesJVM/runAll")
+addCommandAlias("releaseAll", ";root;release")
+
 lazy val commonSettings = Seq(
   scalacOptions := Seq(
     "-feature",
@@ -127,15 +139,6 @@ lazy val examples = crossProject.crossType(CrossType.Pure)
 lazy val examplesJVM = examples.jvm
 lazy val examplesJS = examples.js
 
-addCommandAlias("validate", ";root;compile;test")
-addCommandAlias("validateJVM", ";coreJVM/compile;coreJVM/mimaReportBinaryIssues;coreJVM/test;examplesJVM/compile;coreJVM/doc")
-addCommandAlias("validateJS", ";coreJS/compile;coreJS/mimaReportBinaryIssues;coreJS/test;examplesJS/compile;coreJS/doc")
-addCommandAlias("release-all", ";root;release")
-addCommandAlias("js", ";project coreJS")
-addCommandAlias("jvm", ";project coreJVM")
-addCommandAlias("root", ";project root")
-addCommandAlias("runAll", ";examplesJVM/runAll")
-
 lazy val scalaMacroDependencies: Seq[Setting[_]] = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %% "macro-compat" % "1.1.1-SNAPSHOT",
@@ -169,8 +172,6 @@ lazy val crossVersionSharedSources: Seq[Setting[_]] =
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-  homepage := Some(url("https://github.com/milessabin/shapeless")),
-  licenses := Seq("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
   publishMavenStyle := true,
   publishArtifact in Test := false,
   pomIncludeRepository := { _ => false },
@@ -181,6 +182,9 @@ lazy val publishSettings = Seq(
     else
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   },
+  homepage := Some(url("https://github.com/milessabin/shapeless")),
+  licenses := Seq("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+  scmInfo := Some(ScmInfo(url("https://github.com/milessabin/shapeless"), "scm:git:git@github.com:milessabin/shapeless.git")),
   pomExtra := (
     <developers>
       <developer>
