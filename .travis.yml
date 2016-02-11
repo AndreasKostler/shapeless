@@ -14,7 +14,7 @@ cache:
     - $HOME/.sbt
 
 script:
-  - travis_wait scripts/travis-publish.sh
+  - scripts/travis-publish.sh
 
 env:
   global:
