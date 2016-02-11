@@ -14,7 +14,4 @@ else
 PUBLISH=publishLocal
 fi
 
-${SBT} coreJS/compile coreJS/mimaReportBinaryIssues &&
-travis_wait ${SBT} coreJS/test &&
-${SBT} examplesJS/compile coreJS/doc &&
-${SBT} validateJVM ${PUBLISH}
+${SBT} validate ${PUBLISH}
