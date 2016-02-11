@@ -1,4 +1,5 @@
 scalacOptions += "-deprecation"
+libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.15"
 
 addSbtPlugin("com.typesafe"       % "sbt-mima-plugin"       % "0.1.8")
 addSbtPlugin("com.typesafe.sbt"   % "sbt-osgi"              % "0.6.0")
